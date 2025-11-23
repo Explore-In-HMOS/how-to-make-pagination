@@ -7,7 +7,7 @@ import { ComponentContent } from '@kit.ArkUI';
 @Builder
 function header() {
   Column() {
-    Text("🧙 Game of Thrones Characters")
+    Text('🧙 Game of Thrones Characters')
       .fontSize(16)
       .fontWeight(FontWeight.Bold)
       .textAlign(TextAlign.Center)
@@ -33,7 +33,7 @@ struct PaginationPage {
 
   build() {
     Flex({ justifyContent: FlexAlign.Center, wrap: FlexWrap.Wrap, alignItems: ItemAlign.Center }) {
-      Button("🔄 Refresh Characters")
+      Button('🔄 Refresh Characters')
         .backgroundColor(`#4a7c59`)
         .fontSize(14)
         .fontWeight(FontWeight.Medium)
@@ -46,7 +46,7 @@ struct PaginationPage {
         })
 
       Row() {
-        Button("⬅️ Previous Page")
+        Button('⬅️ Previous Page')
           .backgroundColor(`#6a9f84`)
           .width('45%')
           .height(26)
@@ -60,7 +60,7 @@ struct PaginationPage {
             }
           })
 
-        Button("Next Page ➡️")
+        Button('Next Page ➡️')
           .height(26)
           .fontSize(13)
           .backgroundColor(`#6a9f84`)
@@ -98,9 +98,6 @@ struct PaginationPage {
                   .fontWeight(FontWeight.Normal)
                   .opacity(0.8)
               }
-              .onClick(() => {
-                console.log(`Clicked on: ${char.name}`)
-              })
               .backgroundColor(`#2f5f4f`)
               .padding({
                 top: 6,
@@ -137,7 +134,6 @@ struct PaginationPage {
       }
       this.items = result
 
-      console.log('Parsed characters:', this.items)
     }).catch((err: BusinessError) => {
       console.error(`Fetch error: ${err.code} - ${JSON.stringify(err)}`)
       this.items = 'Fetch error'
@@ -153,7 +149,6 @@ struct PaginationPage {
 
     session.fetch(request).then((rep: rcp.Response) => {
       if (rep) {
-        console.log(`Character with ID ${characterId} deleted successfully`)
         this.loadPage()
       }
     }).catch((err: BusinessError) => {
