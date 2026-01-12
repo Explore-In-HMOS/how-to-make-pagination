@@ -7,8 +7,8 @@ Pagination Feature is a demo page that loads and displays paginated data from a 
 # Preview
 
 <div>
-  <img src="resources/p1.png" width="25%">
-  <img src="resources/p2.png" width="25%">
+  <img src="screenshots/p1.png" width="25%">
+  <img src="screenshots/p2.png" width="25%">
 </div>
 
 # Tech Stack

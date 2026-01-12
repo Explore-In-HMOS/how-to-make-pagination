@@ -2,17 +2,15 @@ import { rcp } from '@kit.RemoteCommunicationKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Characters } from '../viewmodel/PaginationModel';
 import { ComponentContent } from '@kit.ArkUI';
-
+import taskpool from '@ohos.taskpool';
 
 @Builder
 function header() {
-  Column() {
     Text('🧙 Game of Thrones Characters')
       .fontSize(16)
       .fontWeight(FontWeight.Bold)
       .textAlign(TextAlign.Center)
       .margin({ bottom: 8 })
-  }
 }
 
 @Entry
@@ -32,7 +30,7 @@ struct PaginationPage {
   }
 
   build() {
-    Flex({ justifyContent: FlexAlign.Center, wrap: FlexWrap.Wrap, alignItems: ItemAlign.Center }) {
+    Column(){
       Button('🔄 Refresh Characters')
         .backgroundColor(`#4a7c59`)
         .fontSize(14)
@@ -115,14 +113,24 @@ struct PaginationPage {
     }.backgroundColor(`#152f2b`).padding(16)
   }
 
+  processRespTask(err: BusinessError, data: rcp.Response) {
+    if (!err) {
+      console.info('cookies:');
+    } else {
+      console.info('error:');
+    }
+  }
+
   loadPage() {
     const url = `https://${this.page1}${this.currentPage}&pageSize=${this.pageSize}`
     const request = new rcp.Request(url, 'GET')
     const session = rcp.createSession()
 
-    session.fetch(request).then((rep: rcp.Response) => {
-      return rep.toJSON() as Characters[]
-    }).then((data: Characters[]) => {
+
+    session.fetch(request).then(async (rep: rcp.Response) => {
+      const task = new taskpool.Task(this.processRespTask, rep.toJSON() as Promise<Characters>);
+      await taskpool.execute(task);
+      const data = rep.toJSON() as Characters[]
       this.chars = data
 
       let result: string = ''
@@ -138,6 +146,7 @@ struct PaginationPage {
       console.error(`Fetch error: ${err.code} - ${JSON.stringify(err)}`)
       this.items = 'Fetch error'
     })
+
   }
 
   deletePage() {
@@ -147,7 +156,9 @@ struct PaginationPage {
     const request = new rcp.Request(url, 'DELETE')
     const session = rcp.createSession()
 
-    session.fetch(request).then((rep: rcp.Response) => {
+    session.fetch(request).then(async (rep: rcp.Response) => {
+      const task = new taskpool.Task(this.processRespTask, rep.toJSON() as Promise<Characters>);
+      await taskpool.execute(task);
       if (rep) {
         this.loadPage()
       }
